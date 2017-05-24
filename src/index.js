@@ -21,6 +21,21 @@ module.exports = function (token, options, cb) {
   if (options._.length === 0) return cb(null, 'No repository given.')
   parseRepo(options, cb)
 
+  Date.prototype.toLocaleDateString = function () {
+    var day = this.getDate()
+    var month = this.getMonth() + 1
+    var year = this.getFullYear()
+
+    if (day < 10)  {
+      day = `0${day}`
+    }
+    if (month < 10)  {
+      month = `0${month}`
+    }
+
+      return `${day}-${month}-${year}`;
+  };
+
   function parseRepo (options, cb) {
     options.repos = []
 
@@ -99,6 +114,7 @@ module.exports = function (token, options, cb) {
     issue.comments = []
     issue.comments_url = body.comments_url
     issue.milestone = body.milestone ? body.milestone.title : null
+    issue.number = body.number
 
     if (repo.issue === 'all') {
       issue.quicklink = repo.full + '#' + body.html_url.split('/').pop()
@@ -130,11 +146,11 @@ module.exports = function (token, options, cb) {
     var data = JSON.stringify(issueData, null, ' ')
     var count = JSON.parse(data).length
 
-    if (count > 250) {
-      console.log('Only processing the first 250 issues.')
-      var limit = 250
+    if (count > 300) {
+      console.log('Only processing the first 300 issues.')
+      var limit = 300
       var excess = count - limit
-      var newData = JSON.parse(data).splice(excess, 250)
+      var newData = JSON.parse(data).splice(excess, 300)
       data = JSON.stringify(newData)
     }
 

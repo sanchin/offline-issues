@@ -40,6 +40,14 @@ module.exports = function writehtml (options, cb) {
   cb(null, 'Wrote html files.')
 }
 
+function compare(a,b) {
+  if (a.id < b.id)
+    return -1;
+  if (a.id > b.id)
+    return 1;
+  return 0;
+}
+
 // Writers
 function writeIssues (issues, cb) {
   issues.forEach(function (issue) {
@@ -59,6 +67,7 @@ function writeIndex (repositories, cb) {
   var template = handlebars.compile(source.toString())
 
   repositories.forEach(function (repository) {
+    repository.issues.sort(compare)
     repository.issues.forEach(function (issue) {
       issue.offlineUrl = repoDetails(issue.url)
     })
